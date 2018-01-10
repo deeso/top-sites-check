@@ -1,6 +1,6 @@
 from werkzeug.serving import make_server
 
-from .topsites import ServiceInterface
+from .interface import ServiceInterface
 from flask import Flask, jsonify
 from threading import Thread
 
@@ -76,3 +76,12 @@ class QueryService(ServiceInterface):
         results = {}
         for s in self.sources:
             results.update(s.check(domain))
+
+    @classmethod
+    def parse_toml(self, toml_dict):
+        sources_blocks = toml_dict.get('sources', {})
+        if len(sources_blocks) == 0:
+            raise Exception("One or more data sources must be specified")
+
+        sources = []
+        for block in sources_blocks
