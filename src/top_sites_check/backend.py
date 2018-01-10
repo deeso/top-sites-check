@@ -1,8 +1,10 @@
 from werkzeug.serving import make_server
-from .interface import ServiceInterface
 from flask import Flask
 from threading import Thread
-from top_sites_check import DATA_SOURCES, NAME, debug
+
+from .interface import ServiceInterface
+from .logger import debug
+from top_sites_check import DATA_SOURCES, NAME
 
 
 HOST = '127.0.0.1'

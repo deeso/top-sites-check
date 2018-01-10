@@ -5,7 +5,7 @@ from urllib import request
 import csv
 
 from .interface import ServiceInterface
-from top_sites_check import debug
+from .logger import debug
 
 
 class CsvZipServiceInterface(ServiceInterface):
