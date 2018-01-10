@@ -63,8 +63,10 @@ class CsvZipServiceInterface(ServiceInterface):
     def load(self, **kargs):
         if self.filename is not None:
             self.load_from_filename()
+            self.loaded = True
         elif self.url is not None:
             self.load_from_url()
+            self.loaded = True
         return self.name_data
 
     def check(self, domain, **kargs):
@@ -72,3 +74,17 @@ class CsvZipServiceInterface(ServiceInterface):
             if domain in info_dict:
                 return {"name": self.name, "rank": info_dict[domain]}
         return {}
+
+    @classmethod
+    def parse_toml(cls, toml_dict):
+        bt = toml_dict.get('type', None)
+        if bt is None or bt != cls.key():
+            raise Exception('Attempting to parse the wrong block type')
+        name = toml_dict.get('name', 'unknown')
+        filename = toml_dict.get('filename', None)
+        url = toml_dict.get('url', None)
+
+        if url is None and filename is None:
+            raise Exception('Must specify a valid source')
+
+        return cls(name, url=url, filename=filename)
