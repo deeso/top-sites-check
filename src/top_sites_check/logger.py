@@ -1,6 +1,6 @@
 import logging
 import sys
-import consts
+from top_sites_check import consts
 
 
 def init_logger():
