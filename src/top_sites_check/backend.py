@@ -105,8 +105,8 @@ class QueryService(ServiceInterface):
 
     @classmethod
     def parse_toml(cls, toml_dict):
-        ts_block = toml_dict[NAME] if NAME in toml_dict else toml_dict 
-        sources_blocks = toml_dict.get('sources', {})
+        ts_block = toml_dict[NAME] if NAME in toml_dict else toml_dict
+        sources_blocks = ts_block.get('sources', {})
         if len(sources_blocks) == 0:
             raise Exception("One or more data sources must be specified")
 
@@ -120,7 +120,7 @@ class QueryService(ServiceInterface):
             sources.append(source)
 
         kargs = {'sources': sources}
-        kargs['host'] = toml_dict.get('host', HOST)
-        kargs['port'] = toml_dict.get('port', PORT)
-        kargs['name'] = toml_dict.get('name', 'not specified')
+        kargs['host'] = ts_block.get('host', HOST)
+        kargs['port'] = ts_block.get('port', PORT)
+        kargs['name'] = ts_block.get('name', 'not specified')
         return cls(**kargs)
