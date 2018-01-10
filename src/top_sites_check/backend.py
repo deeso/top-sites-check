@@ -4,7 +4,7 @@ from threading import Thread
 
 from .interface import ServiceInterface
 from .logger import debug
-from top_sites_check import DATA_SOURCES, NAME
+from .consts import DATA_SOURCES, NAME
 
 
 HOST = '127.0.0.1'

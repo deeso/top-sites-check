@@ -1,27 +1,22 @@
 import logging
 import sys
-
-
-NAME = 'top-sites-check'
-LOGGER = None
+import consts
 
 
 def init_logger():
-    global LOGGER, NAME
-    logging.getLogger(NAME).setLevel(logging.DEBUG)
+    logging.getLogger(consts.NAME).setLevel(logging.DEBUG)
     ch = logging.StreamHandler(sys.stdout)
     ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(message)s')
     ch.setFormatter(formatter)
-    logging.getLogger(NAME).addHandler(ch)
-    LOGGER = logging.getLogger(NAME)
+    logging.getLogger(consts.NAME).addHandler(ch)
+    consts.LOGGER = logging.getLogger(consts.NAME)
 
 
 def logger():
-    global LOGGER
-    if LOGGER is None:
+    if consts.LOGGER is None:
         init_logger()
-    return LOGGER
+    return consts.LOGGER
 
 
 def debug(msg):
