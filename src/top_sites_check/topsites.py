@@ -85,12 +85,17 @@ class CsvZipServiceInterface(ServiceInterface):
         self.filename = filename
         self.loaded = False
         self.name = name
+        self.update_url = url
 
         self.data = {}
         self.name_data = {}
 
     def update(self, **kargs):
-        self.load()
+        if self.update_url is not None:
+            r = request.urlopen(self.update_url)
+            self.load_from_file(r)
+            return True
+        return False
 
     def load_from_url(self):
         if self.url is not None:
@@ -124,7 +129,7 @@ class CsvZipServiceInterface(ServiceInterface):
     def load(self, **kargs):
         if self.filename is not None:
             self.load_from_filename()
-        if self.url is not None:
+        elif self.url is not None:
             self.load_from_url()
         return self.name_data
 
@@ -133,23 +138,3 @@ class CsvZipServiceInterface(ServiceInterface):
             if domain in info_dict:
                 return {"name": self.name, "rank": info_dict[domain]}
         return {}
-
-
-class Backend(ServiceInterface):
-
-    def __init__(self, sources=[], **kargs):
-            super(ServiceInterface, self).__init__(**kargs)
-            self.sources = sources
-
-    def update(self, **kargs):
-        for s in self.sources:
-            s.update()
-
-    def load(self, **kargs):
-        for s in self.sources:
-            s.load()
-
-    def check(self, domain, **kargs):
-        results = {}
-        for s in self.sources:
-            results.update(s.check(domain))

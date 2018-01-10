@@ -1,8 +1,32 @@
+from werkzeug.serving import make_server
+
 from .topsites import ServiceInterface
 from flask import Flask, jsonify
+from threading import Thread
 
 
-app = Flask(__name__)
+class FlaskServer(object):
+    def __init__(self, name, host='127.0.0.1', port=9006):
+        self.port = port
+        self.host = host
+        self.running = False
+        self.app = None
+        self.thread = None
+        self.name = name
+        self.srv = None
+
+    def start(self):
+        self.app = Flask(self.name)
+        self.srv = make_server(self.host, self.port, self.app)
+        self.thread = Thread(target=self.run_app, args=(self))
+        self.thread.start()
+
+    def stop(self):
+        if self.srv is not None:
+            self.srv.shutdown()
+
+    def run_app(self):
+        self.srv.serve_forever()
 
 
 @app.route('/topsites/update', methods=['GET'])

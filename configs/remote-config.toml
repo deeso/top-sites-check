@@ -6,10 +6,10 @@ url = 'http://s3.amazonaws.com/alexa-static/top-1m.csv.zip'
 [umbrellas-top-1m]
 name = 'umbrella-top-1m'
 type = 'csv-zip'
-file = 'http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip'
+url = 'http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip'
 
 [umbrellas-top-1m-tlds]
 name = 'umbrella-top-1m-tlds'
 type = 'csv-zip'
-file = 'http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m-TLD.csv.zip'
+url = 'http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m-TLD.csv.zip'
 
