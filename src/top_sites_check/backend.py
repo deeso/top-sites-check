@@ -3,7 +3,7 @@ from .interface import ServiceInterface
 from flask import Flask
 from threading import Thread
 
-import DATA_SOURCES
+from top_sites_check import DATA_SOURCES
 
 HOST = '127.0.0.1'
 PORT = 9006
