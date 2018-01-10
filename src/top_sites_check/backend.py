@@ -6,7 +6,10 @@ from threading import Thread
 
 
 class FlaskServer(object):
-    def __init__(self, name, host='127.0.0.1', port=9006):
+    HOST = '127.0.0.1'
+    PORT = 9006
+
+    def __init__(self, name, host=HOST, port=PORT, routes=[]):
         self.port = port
         self.host = host
         self.running = False
@@ -14,9 +17,18 @@ class FlaskServer(object):
         self.thread = None
         self.name = name
         self.srv = None
+        self.routes = {}
 
     def start(self):
         self.app = Flask(self.name)
+        for route in self.routes:
+            rule = route['url']
+            endpoint = route['endpoint']
+            view_func = route['view_function']
+            methods = route['methods']
+            self.app.add_url_rule(rule, endpoint=endpoint,
+                                  view_func=view_func, methods=methods)
+
         self.srv = make_server(self.host, self.port, self.app)
         self.thread = Thread(target=self.run_app, args=(self))
         self.thread.start()
@@ -29,25 +41,28 @@ class FlaskServer(object):
         self.srv.serve_forever()
 
 
-@app.route('/topsites/update', methods=['GET'])
-def handle_update_request():
-    return jsonify({'tasks': {}})
-
-
-@app.route('/topsites/check', methods=['GET'])
-def handle_check_request():
-    return jsonify({'tasks': {}})
-
-
-@app.route('/topsites/load', methods=['GET'])
-def handle_load_request():
-    return jsonify({'tasks': {}})
-
-
 class QueryService(ServiceInterface):
+
     def __init__(self, sources=[], **kargs):
             super(ServiceInterface, self).__init__(**kargs)
             self.sources = sources
+            self.routes = [
+                {'rule': "/topsites/update",
+                 "endpoint": "update",
+                 "view_func": self.update,
+                 "methods": ['GET'],
+                 },
+                {'rule': "/topsites/load",
+                 "endpoint": "load",
+                 "view_func": self.load,
+                 "methods": ['GET'],
+                 },
+                {'rule': "/topsites/check",
+                 "endpoint": "check",
+                 "view_func": self.check,
+                 "methods": ['GET'],
+                 },
+            ]
 
     def update(self, **kargs):
         for s in self.sources:
