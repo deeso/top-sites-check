@@ -1,4 +1,4 @@
-from consts import DATA_SOURCES
+from .consts import DATA_SOURCES
 from .csvzip import CsvZipServiceInterface
 
 
