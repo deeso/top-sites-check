@@ -2,8 +2,8 @@ from werkzeug.serving import make_server
 from .interface import ServiceInterface
 from flask import Flask
 from threading import Thread
+from top_sites_check import DATA_SOURCES, NAME, debug
 
-from top_sites_check import DATA_SOURCES
 
 HOST = '127.0.0.1'
 PORT = 9006
@@ -28,18 +28,24 @@ class FlaskServer(object):
             endpoint = route['endpoint']
             view_func = route['view_function']
             methods = route['methods']
+            debug("Adding rule:%s as (%s)" % (rule, endpoint))
             self.app.add_url_rule(rule, endpoint=endpoint,
                                   view_func=view_func, methods=methods)
 
         self.srv = make_server(self.host, self.port, self.app)
         self.thread = Thread(target=self.run_app, args=(self))
+        _params = (self.name, self.host, self.port)
+        debug("Starting server (%s) in thread: %s:%s" % _params)
         self.thread.start()
 
     def stop(self):
         if self.srv is not None:
+            debug("Stopping server (%s)" % (self.name))
             self.srv.shutdown()
+            self.thread.join()
 
     def run_app(self):
+        debug("Running the app server (%s) in an infinite loop " % (self.name))
         self.srv.serve_forever()
 
 
@@ -72,20 +78,32 @@ class QueryService(ServiceInterface):
                                       routes=self.routes, **kargs)
 
     def update(self, **kargs):
+        debug("Updating server (%s) sources " % (self.name))
         for s in self.sources:
             s.update()
 
     def load(self, **kargs):
+        debug("Loading server (%s) sources " % (self.name))
         for s in self.sources:
             s.load()
 
     def check(self, domain, **kargs):
+        debug("Checking server (%s) sources for %s" % (self.name, domain))
         results = {}
         for s in self.sources:
             results.update(s.check(domain))
 
+    def start(self):
+        debug("Starting service (%s)" % (self.name))
+        self.server.start()
+
+    def stop(self):
+        debug("Stopping service (%s)" % (self.name))
+        self.server.stop()
+
     @classmethod
     def parse_toml(cls, toml_dict):
+        ts_block = toml_dict[NAME] if NAME in toml_dict else toml_dict 
         sources_blocks = toml_dict.get('sources', {})
         if len(sources_blocks) == 0:
             raise Exception("One or more data sources must be specified")
@@ -103,5 +121,4 @@ class QueryService(ServiceInterface):
         kargs['host'] = toml_dict.get('host', HOST)
         kargs['port'] = toml_dict.get('port', PORT)
         kargs['name'] = toml_dict.get('name', 'not specified')
-
         return cls(**kargs)

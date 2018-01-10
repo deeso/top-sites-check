@@ -3,7 +3,9 @@ import io
 from io import StringIO
 from urllib import request
 import csv
+
 from .interface import ServiceInterface
+from top_sites_check import debug
 
 
 class CsvZipServiceInterface(ServiceInterface):
@@ -26,6 +28,7 @@ class CsvZipServiceInterface(ServiceInterface):
 
     def update(self, **kargs):
         if self.update_url is not None:
+            debug("Updating %s from url: %s" % (self.name, self.url))
             r = request.urlopen(self.update_url)
             self.load_from_file(r)
             return True
@@ -33,12 +36,14 @@ class CsvZipServiceInterface(ServiceInterface):
 
     def load_from_url(self):
         if self.url is not None:
+            debug("Loading %s from file: %s" % (self.name, self.url))
             r = request.urlopen(self.url)
             return self.load_from_file(r)
         return self.name_data
 
     def load_from_filename(self):
         if self.filename is not None:
+            debug("Loading %s from file: %s" % (self.name, self.filename))
             r = open(self.filename)
             return self.load_from_file(r)
         return self.name_data
@@ -70,6 +75,7 @@ class CsvZipServiceInterface(ServiceInterface):
         return self.name_data
 
     def check(self, domain, **kargs):
+        debug("Checking for %s in: %s" % (domain, self.name))
         for name, info_dict in self.name_data.items():
             if domain in info_dict:
                 return {"name": self.name, "rank": info_dict[domain]}
