@@ -1,6 +1,8 @@
 from werkzeug.serving import make_server
 from flask import Flask
 from threading import Thread
+import os
+import toml
 
 from .interface import ServiceInterface
 from .logger import debug
@@ -124,3 +126,12 @@ class QueryService(ServiceInterface):
         kargs['port'] = ts_block.get('port', PORT)
         kargs['name'] = ts_block.get('name', 'not specified')
         return cls(**kargs)
+
+    @classmethod
+    def parse_toml(cls, toml_file):
+        try:
+            os.stat(toml_file)
+            toml_dict = toml.load(open(toml_file))
+            return cls.parse_toml(toml_dict)
+        except:
+            raise
