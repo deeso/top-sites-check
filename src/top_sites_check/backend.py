@@ -111,7 +111,7 @@ class QueryService(ServiceInterface):
             raise Exception("One or more data sources must be specified")
 
         sources = []
-        for block in sources_blocks:
+        for block in sources_blocks.values():
             bt = block.get('type', None)
             if bt is None or bt not in DATA_SOURCES:
                 raise Exception("Source type is not valid or unknown: %s" % bt)
