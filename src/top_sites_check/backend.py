@@ -61,6 +61,11 @@ class QueryService(ServiceInterface):
             super(QueryService, self).__init__(**kargs)
             self.sources = sources
             self.routes = [
+                {'rule': "/",
+                 "endpoint": "test",
+                 "view_func": self.test,
+                 "methods": ['GET'],
+                 },
                 {'rule': "/topsites/update",
                  "endpoint": "update",
                  "view_func": self.update,
@@ -81,6 +86,10 @@ class QueryService(ServiceInterface):
             # self.server = FlaskServer(name=self.name, host=host, port=port,
             #                           routes=self.routes, **kargs)
             self.server = FlaskServer(**kargs)
+
+    def test(self, **kargs):
+        debug("Testing server (%s) sources " % (self.name))
+        return 'works'
 
     def update(self, **kargs):
         debug("Updating server (%s) sources " % (self.name))
