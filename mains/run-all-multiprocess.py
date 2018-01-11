@@ -2,7 +2,7 @@ import logging
 import time
 from argparse import ArgumentParser
 from top_sites_check.backend import QueryService
-from top_sites_check.logger import init_logger, error
+from top_sites_check.logger import init_logger, error, info
 
 
 description = "Run a server that checks if domain is in the top 1m"
@@ -30,7 +30,8 @@ if __name__ == "__main__":
     qs = None
     try:
         qs = QueryService.parse_toml_file(args.config)
-        qs.load_start()
+        qs.load_and_start()
+        info("Service is up and running, infinite loop (ctrl-c to exit)")
         while True:
             time.sleep(60000)
     except KeyboardInterrupt:
