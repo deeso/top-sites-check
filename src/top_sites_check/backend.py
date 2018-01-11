@@ -37,7 +37,7 @@ class FlaskServer(object):
                                   view_func=view_func, methods=methods)
 
         self.srv = make_server(self.host, self.port, self.app)
-        self.thread = Thread(target=self.run_app, args=(self))
+        self.thread = Thread(target=self.run_app, args=())
         _params = (self.name, self.host, self.port)
         debug("Starting server (%s) in thread: %s:%s" % _params)
         self.thread.start()
@@ -78,8 +78,9 @@ class QueryService(ServiceInterface):
                  },
             ]
             self.name = kargs.get('name', '')
-            self.server = FlaskServer(self.name, host=host, port=port,
-                                      routes=self.routes, **kargs)
+            # self.server = FlaskServer(name=self.name, host=host, port=port,
+            #                           routes=self.routes, **kargs)
+            self.server = FlaskServer(**kargs)
 
     def update(self, **kargs):
         debug("Updating server (%s) sources " % (self.name))
