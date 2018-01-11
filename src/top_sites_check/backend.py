@@ -57,9 +57,9 @@ class QueryService(ServiceInterface):
     HOST = '127.0.0.1'
     PORT = 9006
 
-    def __init__(self, **kargs):
+    def __init__(self, sources=[], **kargs):
             super(QueryService, self).__init__(**kargs)
-            self.sources = kargs.get('sources', [])
+            self.sources = sources
             self.routes = [
                 {'rule': "/",
                  "endpoint": "test",
