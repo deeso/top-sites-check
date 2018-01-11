@@ -23,7 +23,7 @@ class FlaskServer(object):
         self.thread = None
         self.name = name
         self.srv = None
-        self.routes = {}
+        self.routes = routes
 
     def start(self):
         self.app = Flask(self.name)
