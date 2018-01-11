@@ -3,6 +3,7 @@ from flask import Flask
 from threading import Thread
 import os
 import toml
+import json
 
 from .interface import ServiceInterface
 from .logger import debug
@@ -95,13 +96,13 @@ class QueryService(ServiceInterface):
         debug("Updating server (%s) sources " % (self.name))
         for s in self.sources:
             s.update()
-        return {'operation': 'load', 'result': True}
+        return json.dumps({'operation': 'load', 'result': True})
 
     def load(self, **kargs):
         debug("Loading server (%s) sources " % (self.name))
         for s in self.sources:
             s.load()
-        return {'operation': 'load', 'result': True}
+        return json.dumps({'operation': 'load', 'result': True})
 
     def load_and_start(self, **kargs):
         debug("Loading server (%s) sources " % (self.name))
@@ -121,7 +122,7 @@ class QueryService(ServiceInterface):
             if len(r) == 0:
                 continue
             source_results['results'][s.name] = r
-        return source_results
+        return json.dumps(source_results)
 
     def start(self):
         debug("Starting service (%s)" % (self.name))
