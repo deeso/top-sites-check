@@ -16,7 +16,7 @@ class CsvZipServiceInterface(ServiceInterface):
         return cls.TYPE.lower()
 
     def __init__(self, name, url=None, filename=None, **kargs):
-        super(ServiceInterface, self).__init__(**kargs)
+        super(CsvZipServiceInterface, self).__init__(**kargs)
         self.url = url
         self.filename = filename
         self.loaded = False

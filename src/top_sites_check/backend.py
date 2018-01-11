@@ -58,7 +58,7 @@ class QueryService(ServiceInterface):
     PORT = 9006
 
     def __init__(self, sources=[], host=HOST, port=PORT, **kargs):
-            super(ServiceInterface, self).__init__(**kargs)
+            super(QueryService, self).__init__(**kargs)
             self.sources = sources
             self.routes = [
                 {'rule': "/topsites/update",
