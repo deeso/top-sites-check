@@ -128,7 +128,7 @@ class QueryService(ServiceInterface):
         return cls(**kargs)
 
     @classmethod
-    def parse_toml(cls, toml_file):
+    def parse_toml_file(cls, toml_file):
         try:
             os.stat(toml_file)
             toml_dict = toml.load(open(toml_file))
