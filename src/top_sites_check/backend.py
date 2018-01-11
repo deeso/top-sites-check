@@ -28,9 +28,9 @@ class FlaskServer(object):
     def start(self):
         self.app = Flask(self.name)
         for route in self.routes:
-            rule = route['url']
+            rule = route['rule']
             endpoint = route['endpoint']
-            view_func = route['view_function']
+            view_func = route['view_func']
             methods = route['methods']
             debug("Adding rule:%s as (%s)" % (rule, endpoint))
             self.app.add_url_rule(rule, endpoint=endpoint,
@@ -64,22 +64,22 @@ class QueryService(ServiceInterface):
                 {'rule': "/",
                  "endpoint": "test",
                  "view_func": self.test,
-                 "methods": ['GET'],
+                 "methods": ['GET', ],
                  },
                 {'rule': "/topsites/update",
                  "endpoint": "update",
                  "view_func": self.update,
-                 "methods": ['GET'],
+                 "methods": ['GET', ],
                  },
                 {'rule': "/topsites/load",
                  "endpoint": "load",
                  "view_func": self.load,
-                 "methods": ['GET'],
+                 "methods": ['GET', ],
                  },
                 {'rule': "/topsites/check/<domain>",
                  "endpoint": "check",
                  "view_func": self.check,
-                 "methods": ['GET'],
+                 "methods": ['GET', ],
                  },
             ]
             self.name = kargs.get('name', '')
