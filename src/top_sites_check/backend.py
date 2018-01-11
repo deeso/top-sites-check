@@ -57,9 +57,9 @@ class QueryService(ServiceInterface):
     HOST = '127.0.0.1'
     PORT = 9006
 
-    def __init__(self, sources=[], host=HOST, port=PORT, **kargs):
+    def __init__(self, **kargs):
             super(QueryService, self).__init__(**kargs)
-            self.sources = sources
+            self.sources = kargs.get('sources', [])
             self.routes = [
                 {'rule': "/",
                  "endpoint": "test",
@@ -85,7 +85,7 @@ class QueryService(ServiceInterface):
             self.name = kargs.get('name', '')
             # self.server = FlaskServer(name=self.name, host=host, port=port,
             #                           routes=self.routes, **kargs)
-            self.server = FlaskServer(**kargs)
+            self.server = FlaskServer(routes=self.routes, **kargs)
 
     def test(self, **kargs):
         debug("Testing server (%s) sources " % (self.name))
