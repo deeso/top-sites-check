@@ -71,7 +71,7 @@ class QueryService(ServiceInterface):
                  "view_func": self.load,
                  "methods": ['GET'],
                  },
-                {'rule': "/topsites/check",
+                {'rule': "/topsites/check/<domain>",
                  "endpoint": "check",
                  "view_func": self.check,
                  "methods": ['GET'],
@@ -86,11 +86,13 @@ class QueryService(ServiceInterface):
         debug("Updating server (%s) sources " % (self.name))
         for s in self.sources:
             s.update()
+        return {'operation': 'load', 'result': True}
 
     def load(self, **kargs):
         debug("Loading server (%s) sources " % (self.name))
         for s in self.sources:
             s.load()
+        return {'operation': 'load', 'result': True}
 
     def load_and_start(self, **kargs):
         debug("Loading server (%s) sources " % (self.name))
@@ -98,9 +100,13 @@ class QueryService(ServiceInterface):
             s.load()
         self.start()
 
-    def check(self, domain, **kargs):
+    def check(self, domain=None, **kargs):
         debug("Checking server (%s) sources for %s" % (self.name, domain))
-        source_results = {'domain': domain, 'results': {}}
+        source_results = {'operation': 'check',
+                          'domain': domain,
+                          'results': {}}
+        if domain is None:
+            return source_results
         for s in self.sources:
             r = s.check(domain)
             if len(r) == 0:
