@@ -44,7 +44,7 @@ class CsvZipServiceInterface(ServiceInterface):
     def load_from_filename(self):
         if self.filename is not None:
             debug("Loading %s from file: %s" % (self.name, self.filename))
-            r = open(self.filename)
+            r = open(self.filename, 'rb')
             return self.load_from_file(r)
         return self.name_data
 
@@ -76,9 +76,16 @@ class CsvZipServiceInterface(ServiceInterface):
 
     def check(self, domain, **kargs):
         debug("Checking for %s in: %s" % (domain, self.name))
+        root_domain = domain
+        if len(root_domain.split('.')) < 1:
+            return {}
+        elif len(root_domain.split('.')) > 2:
+            root_domain = ".".join(root_domain.split('.')[-2:])
+
         for name, info_dict in self.name_data.items():
-            if domain in info_dict:
-                return {"name": self.name, "rank": info_dict[domain]}
+            if root_domain in info_dict:
+                return {"rank": info_dict[root_domain],
+                        "root_domain": root_domain}
         return {}
 
     @classmethod

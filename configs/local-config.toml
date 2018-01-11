@@ -1,21 +1,22 @@
 [top-sites]
+    name = 'check-service'
     host = ''
     port = 10006
 
     [top-sites.sources.alexa-top-1m]
         name = 'alexa-top-1m'
         type = 'csv-zip'
-        file = '/opt/lists/alexa-top-1m.csv.zip'
+        filename = '/opt/lists/alexa-top-1m.csv.zip'
         url = 'http://s3.amazonaws.com/alexa-static/top-1m.csv.zip'
 
     [top-sites.sources.umbrellas-top-1m]
         name = 'umbrella-top-1m'
         type = 'csv-zip'
-        file = '/opt/lists/umbrella-top-1m.csv.zip'
+        filename = '/opt/lists/umbrella-top-1m.csv.zip'
         url = 'http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip'
 
     [top-sites.sources.umbrellas-top-1m-tlds]
         name = 'umbrella-top-1m-tlds'
         type = 'csv-zip'
-        file = '/opt/lists/umbrella-top-1m-tlds.csv.zip'
+        filename = '/opt/lists/umbrella-top-1m-tlds.csv.zip'
         url = 'http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m-TLD.csv.zip'

@@ -92,11 +92,21 @@ class QueryService(ServiceInterface):
         for s in self.sources:
             s.load()
 
+    def load_and_start(self, **kargs):
+        debug("Loading server (%s) sources " % (self.name))
+        for s in self.sources:
+            s.load()
+        self.start()
+
     def check(self, domain, **kargs):
         debug("Checking server (%s) sources for %s" % (self.name, domain))
-        results = {}
+        source_results = {'domain': domain, 'results': {}}
         for s in self.sources:
-            results.update(s.check(domain))
+            r = s.check(domain)
+            if len(r) == 0:
+                continue
+            source_results['results'][s.name] = r
+        return source_results
 
     def start(self):
         debug("Starting service (%s)" % (self.name))
