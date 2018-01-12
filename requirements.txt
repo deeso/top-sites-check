@@ -1,0 +1,6 @@
+toml
+requests
+regex
+flask
+https://github.com/deeso/top-sites-check/tarball/master#egg=top-sites-check
+
