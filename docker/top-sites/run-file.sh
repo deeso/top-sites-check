@@ -1,32 +1,46 @@
-DOCKER_TAG=python3:latest
+DOCKER_TAG=python35:latest
 DOCKER_NAME=top-sites
 
 SERVICE=10006
-GIT_REPO=https://github.com/deeso/top-sites-check.git
+
+# cleaup Docker
+rm -fr config.toml python_cmd.sh main.py tmp-git package
+docker kill $DOCKER_NAME
+docker rm $DOCKER_NAME
+
+# base how to set-up docker base on GIT_REPO variable
 TMP_DIR=tmp-git
-BASE_DIR=$TMP_DIR
+GIT_REPO=https://github.com/deeso/top-sites-check.git
+BASE_DIR=../../
+
+if [ ! -z "$GIT_REPO" ] 
+then
+    git clone $GIT_REPO $TMP_DIR
+    BASE_DIR=$TMP_DIR
+fi
+
 CONFIGS_DIR=$BASE_DIR/configs/
+MAINS_DIR=$BASE_DIR/mains/
 
 CONF_FILE=$CONFIGS_DIR/remote-config.toml
-HOST_FILE=$CONFIGS_DIR/hosts
-
-MAINS_DIR=$BASE_DIR/mains/
 MAIN=$MAINS_DIR/run-all-multiprocess.py
+HOST_FILE=
 
-git clone $GIT_REPO $TMP_DIR
 DOCKER_ADD_HOST=
-#MONGODB_HOST=$(cat $HOST_FILE | grep "mongodb-host")
-#DOCKER_ADD_HOST="--add-host $MONGODB_HOST "
+if [ ! -z "$HOST_FILE" ] 
+then
+    MONGODB_HOST=$(cat $HOST_FILE | grep "mongodb-host")
+    REDIS_QUEUE_HOST=$(cat $HOST_FILE | grep "redis-queue-host")
+    DOCKER_ADD_HOST=" --add-host $MONGODB_HOST --add-host $REDIS_QUEUE_HOST "    
+fi
+
 cp $MAIN main.py
 cp $CONF_FILE config.toml
 # hack
 mkdir package
-cp -r $BASE_DIR/src package/
 cp -r $BASE_DIR/setup.py package/
-
-# cleaup Docker
-docker kill $DOCKER_NAME
-docker rm $DOCKER_NAME
+cp -r $BASE_DIR/src package/
+cp -r $BASE_DIR/requirements.txt package/
 
 # setup dirs
 DOCKER_BASE=/data
@@ -42,13 +56,13 @@ mkdir -p $DOCKER_DATA
 mkdir -p $DOCKER_LOGS
 chmod -R a+rw $DOCKER_NB
 
-# TODO comment below if you want to save to Mongo
 echo "python main.py -config config.toml " > python_cmd.sh
 
 
 cat python_cmd.sh
 
-docker build --no-cache -t $DOCKER_TAG .
+#docker build --no-cache -t $DOCKER_TAG .
+docker build -t $DOCKER_TAG .
 
 # clean up here
 rm -fr config.toml python_cmd.sh main.py tmp-git package
